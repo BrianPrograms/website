@@ -3,23 +3,234 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Brian’s Projects</title>
+    <title>Brian Nguyen — UNSW Mechatronics/CS Portfolio</title>
+    <meta
+      name="description"
+      content="Academic portfolio of Brian Nguyen — UNSW Engineering (Honours) Robotics & Mechatronics / Computer Science. Projects, competencies and contact."
+    />
     <link rel="stylesheet" href="styles.css" />
   </head>
+
   <body>
-    <header class="container">
-      <h1>Brian’s Projects</h1>
-      <p>Mechatronics/CS things I’ve built.</p>
+    <header class="container hero">
+      <div class="hero-left">
+        <h1>Brian Nguyen</h1>
+        <p class="subtitle">
+          UNSW Sydney • Engineering (Honours) Robotics & Mechatronics (MTRNAH) / Computer Science
+        </p>
+
+        <p class="summary">
+          I’m a UNSW Engineering (Honours) Robotics & Mechatronics / Computer Science student building software and
+          mechatronic systems with an emphasis on control, sensing, and robust implementation. This site showcases
+          selected projects and applied competencies.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn primary" href="mailto:contact@brians-projects.com">Contact</a>
+          <a class="btn" href="#projects">View Projects</a>
+          <a class="btn" href="assets/resume.pdf" target="_blank" rel="noreferrer">Resume (PDF)</a>
+        </div>
+
+        <div class="links">
+          <a href="https://github.com/BrianPrograms" target="_blank" rel="noreferrer">GitHub</a>
+          <span class="dot">•</span>
+          <a href="https://www.linkedin.com/in/brian-n-aab481241" target="_blank" rel="noreferrer">LinkedIn</a>
+          <span class="dot">•</span>
+          <a href="#competencies">Competencies</a>
+        </div>
+
+        <p class="small-note">
+          Resume link is a placeholder.
+        </p>
+      </div>
+
+      <div class="hero-right">
+        <div class="info-card">
+          <h2>Focus</h2>
+          <ul>
+            <li>Control & estimation (feedback, discrete-time, MPC)</li>
+            <li>Robotics sensing & sensor fusion</li>
+            <li>Software engineering & deployed systems</li>
+          </ul>
+        </div>
+
+        <div class="info-card">
+          <h2>Tooling</h2>
+          <ul>
+            <li>C/C++, JavaScript, Node.js</li>
+            <li>MATLAB, Git/GitHub, VS Code</li>
+            <li>Docker, CI/CD</li>
+            <li>Cloudflare Pages & Render (WebSockets)</li>
+            <li>Google Cloud (Compute Engine)</li>
+          </ul>
+        </div>
+      </div>
     </header>
 
     <main class="container">
-      <h2>Projects</h2>
-      <ul class="card-list">
-        <li class="card">
-          <a href="projects/xorng/">X-O RNG</a>
-          <p>Tic-Tac-Toe where a click may become X, O, or blank.</p>
-        </li>
-      </ul>
+      <section class="section">
+        <h2>Skills</h2>
+
+        <div class="pill-group">
+          <h3>Mechatronics & Robotics</h3>
+          <div class="pill-grid">
+            <span class="pill">Feedback control & stability</span>
+            <span class="pill">Discrete-time control</span>
+            <span class="pill">State estimation (Kalman/EKF)</span>
+            <span class="pill">Sensor fusion</span>
+            <span class="pill">Modeling & simulation</span>
+            <span class="pill">MPC & optimisation</span>
+            <span class="pill">Interfacing sensors/actuators</span>
+            <span class="pill">Systems integration</span>
+          </div>
+        </div>
+
+        <div class="pill-group">
+          <h3>Software & Systems</h3>
+          <div class="pill-grid">
+            <span class="pill">C/C++ (OOP, modular design)</span>
+            <span class="pill">JavaScript / Node.js</span>
+            <span class="pill">WebSockets</span>
+            <span class="pill">REST & API integration</span>
+            <span class="pill">LLM API integration</span>
+            <span class="pill">Prompt engineering</span>
+            <span class="pill">Session/context management</span>
+            <span class="pill">Rate limiting & retries</span>
+            <span class="pill">Containerisation (Docker)</span>
+            <span class="pill">Cloud deployment (GCP)</span>
+            <span class="pill">CI/CD</span>
+            <span class="pill">Logging & observability</span>
+            <span class="pill">Git/GitHub</span>
+          </div>
+        </div>
+
+        <div class="pill-group">
+          <h3>Design & Professional Practice</h3>
+          <div class="pill-grid">
+            <span class="pill">Requirements & stakeholder analysis</span>
+            <span class="pill">Design validation</span>
+            <span class="pill">Teamwork & communication</span>
+            <span class="pill">Project management</span>
+            <span class="pill">Ethics & constraints</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="competencies">
+        <div class="section-head">
+          <h2>Competencies</h2>
+          <p class="muted">
+            Selected UNSW coursework and applied work, grouped by the skills I use in projects.
+          </p>
+        </div>
+
+        <div class="course-grid">
+          <div class="course-card">
+            <h3>Controls & autonomy</h3>
+            <ul>
+              <li><strong>MTRN3020</strong> — modelling and implementation of computer-controlled systems; discrete-time controller design and implementation.</li>
+              <li><strong>MTRN3210</strong> — feedback control concepts; closed-loop analysis and design.</li>
+              <li><strong>MTRN4010</strong> — estimation/decision-making topics (Kalman/EKF, sensor fusion, optimisation/MPC-style methods).</li>
+            </ul>
+          </div>
+
+          <div class="course-card">
+            <h3>Mechatronic computing</h3>
+            <ul>
+              <li><strong>MTRN2500</strong> — C++ OOP and modular programming; interfacing external devices; MATLAB for matrix/data work.</li>
+              <li><strong>MTRN3500</strong> — software for simulation/control; sensor & DAQ interfacing; building complete software packages.</li>
+              <li><strong>MTRN3210</strong> — applying control concepts in practical system contexts.</li>
+            </ul>
+          </div>
+
+          <div class="course-card">
+            <h3>Computer science</h3>
+            <ul>
+              <li><strong>COMP1531</strong> — software engineering practices and teamwork; building and testing applications.</li>
+              <li><strong>COMP2521</strong> — core data structures and algorithmic problem solving.</li>
+              <li><strong>COMP2511</strong> — OO design and design patterns; maintainable architectures.</li>
+              <li><strong>COMP3121</strong> — algorithm design and analysis (complexity, proofs, optimisation techniques).</li>
+            </ul>
+          </div>
+
+          <div class="course-card">
+            <h3>Applied engineering</h3>
+            <ul>
+              <li><strong>DESN1000/2000/3000</strong> — requirements, validation, stakeholder-driven design, teamwork, and communication.</li>
+              <li><strong>Projects</strong> — deployed web apps, bots, and tooling with real users, logging, and iteration.</li>
+              <li><strong>Strength</strong> — translating theory into reliable implementations and clear documentation.</li>
+            </ul>
+          </div>
+        </div>
+
+        <p class="muted small-note">
+          (This is intentionally “highlights” rather than an exhaustive course list.)
+        </p>
+      </section>
+
+      <section class="section" id="projects">
+        <div class="section-head">
+          <h2>Projects</h2>
+          <p class="muted">Selected builds with a focus on deployability and engineering clarity.</p>
+        </div>
+
+        <ul class="card-list">
+          <li class="card">
+            <div class="card-top">
+              <a class="card-title" href="projects/xorng/">X-O RNG</a>
+              <span class="tag">Web • Multiplayer</span>
+            </div>
+            <p>
+              A Tic-Tac-Toe variant where each click randomly becomes X, O, or remains blank.
+              Includes online multiplayer via WebSockets, room codes, spectators, and a round scoreboard.
+            </p>
+            <div class="card-actions">
+              <a class="btn small disabled" href="#" aria-disabled="true" tabindex="-1">Case study (soon)</a>
+              <a class="btn small primary" href="projects/xorng/">Live Demo</a>
+            </div>
+          </li>
+
+          <li class="card">
+            <div class="card-top">
+              <span class="card-title-text">Discord AI Assistant</span>
+              <span class="tag">LLM • Cloud • DevOps</span>
+            </div>
+            <p>
+              Built and deployed a production-ready Discord AI assistant integrating an OpenAI-compatible LLM API via a modular wrapper for prompt templating, conversation state, and tool/function routing. Implemented slash commands, role-based permissions, rate limiting, structured JSON outputs, streaming responses, and observability. Containerised and deployed with CI/CD on cloud infrastructure.
+            </p>
+            <p class="meta">
+              Not directly “click-to-open” (runs inside Discord). I can provide a short architecture write-up and screenshots on request.
+            </p>
+            <div class="card-actions">
+              <!-- Enable these when you have links -->
+              <a class="btn small disabled" href="#" aria-disabled="true" tabindex="-1">Case study (soon)</a>
+              <a class="btn small" href="https://github.com/BrianPrograms" target="_blank" rel="noreferrer">GitHub</a>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <section class="section" id="contact">
+        <h2>Contact</h2>
+        <p class="muted">For collaboration, internships, coursework discussion, or project questions:</p>
+
+        <div class="contact-row">
+          <a class="btn primary" href="mailto:contact@brians-projects.com">contact@brians-projects.com</a>
+          <div class="contact-links">
+            <a href="https://github.com/BrianPrograms" target="_blank" rel="noreferrer">GitHub</a>
+            <span class="dot">•</span>
+            <a href="https://www.linkedin.com/in/brian-n-aab481241" target="_blank" rel="noreferrer">LinkedIn</a>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <p class="muted">© <span id="year"></span> Brian Nguyen • UNSW Mechatronics/CS Portfolio</p>
+      </footer>
     </main>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
   </body>
 </html>

@@ -8,7 +8,7 @@
   </head>
   <body>
     <header class="container">
-      <a href="../../">← Back</a>
+      <a href="../../">← Back to Portfolio</a>
       <h1>X-O RNG</h1>
       <p>Click a tile: it may become X, O, or stay blank.</p>
     </header>
@@ -59,8 +59,20 @@
           </section>
         </aside>
       </div>
+
+      <!-- Footer inside the same container so it aligns with the page width -->
+      <footer class="footer">
+        <p class="muted">
+          © <span id="year"></span> Brian Nguyen •
+          <a href="../../">Home</a> •
+          <a href="mailto:contact@brians-projects.com">Contact</a>
+        </p>
+      </footer>
     </main>
 
     <script type="module" src="app.js"></script>
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
   </body>
 </html>
