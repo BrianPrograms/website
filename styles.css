@@ -1,0 +1,9 @@
+:root { font-family: system-ui, Arial, sans-serif; }
+body { margin: 0; background: #0b0f19; color: #e8eefc; }
+a { color: #7aa7ff; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.container { max-width: 900px; margin: 0 auto; padding: 24px; }
+.card-list { list-style: none; padding: 0; display: grid; gap: 12px; }
+.card { background: #121a2b; border: 1px solid #22304a; border-radius: 12px; padding: 16px; }
+.card p { margin: 8px 0 0; color: #b8c4dd; }

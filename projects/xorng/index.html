@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>X-O RNG</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="container">
+      <a href="../../">← Back</a>
+      <h1>X-O RNG</h1>
+      <p>Click a tile: it may become X, O, or stay blank.</p>
+    </header>
+
+    <main class="container">
+      <div class="controls">
+        <label>
+          Mode:
+          <select id="mode">
+            <option value="local2p">Local: 2 Players</option>
+            <option value="bot">Vs Bot</option>
+            <option value="online">Online Multiplayer</option>
+          </select>
+        </label>
+
+        <button id="reset">Reset</button>
+
+        <div id="onlineControls" class="online-controls" style="display:none;">
+          <input id="playerName" placeholder="Name (optional)" maxlength="16" />
+          <button id="createRoom">Create Room</button>
+
+          <input id="roomCode" placeholder="ROOMCODE" maxlength="6" style="text-transform:uppercase;" />
+          <button id="joinRoom">Join Room</button>
+
+          <button id="copyRoom" type="button">Copy Code</button>
+          <button id="copyInvite" type="button">Copy Invite Link</button>
+          <span id="roomInfo"></span>
+        </div>
+
+        <div id="status" class="status"></div>
+      </div>
+
+      <div class="layout">
+        <div>
+          <div id="board" class="board" aria-label="Tic tac toe board"></div>
+        </div>
+
+        <aside class="side">
+          <section class="panel">
+            <h2 class="panel-title">Players</h2>
+            <div id="playersPanel"></div>
+          </section>
+
+          <section class="panel">
+            <h2 class="panel-title">Scoreboard</h2>
+            <div id="scoreboard"></div>
+            <p class="hint">Scores persist while the room exists.</p>
+          </section>
+        </aside>
+      </div>
+    </main>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
