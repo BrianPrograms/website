@@ -36,7 +36,12 @@ const renderer = createRenderer({
 });
 
 // ---- WS client ----
-const WS_URL = "ws://localhost:8080";
+const PROD_WS_HOST = "website-t3mu.onrender.com";
+
+const WS_URL =
+  location.hostname === "localhost" || location.hostname === "127.0.0.1"
+    ? "ws://localhost:8080"
+    : `wss://${PROD_WS_HOST}`;
 const wsClient = createWsClient({
   wsUrl: WS_URL,
   onError: (msg) => { els.statusEl.textContent = `Error: ${msg}`; }
