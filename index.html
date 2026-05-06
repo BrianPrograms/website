@@ -66,8 +66,8 @@
           <ul>
             <li>C/C++, JavaScript, Node.js</li>
             <li>MATLAB, SolidWorks</li>
-            <li>Docker, PM2, Railway, CI/CD</li>
-            <li>Cloudflare Pages, Render</li>
+            <li>Docker, PM2, CI/CD</li>
+            <li>Cloudflare Pages, D1, Render</li>
             <li>Git/GitHub, VS Code</li>
           </ul>
         </div>
@@ -221,14 +221,14 @@
             </div>
 
             <p>
-              A browser-based Magic: The Gathering Commander draft tool for generating random singleton
-              Commander-legal card pools, resolving blind commander picks, and running asynchronous
-              snake drafts through persistent room codes.
+              An online Magic: The Gathering Commander draft tool that generates random singleton
+              Commander card pools, supports blind commander selection with duplicate-pick resolution, 
+              and runs asynchronous snake drafts through persistent room codes. 
             </p>
-
             <p class="meta">
-              Built with Cloudflare Pages Functions and D1 so draft rooms can persist across sessions
-              without requiring any player to keep the page open.
+              Built with vanilla JavaScript, Cloudflare Pages Functions, and Cloudflare D1. Draft rooms
+              persist across sessions, expire after 30 days of inactivity, and do not require any player
+              to keep the page open.
             </p>
 
             <div class="card-actions">
@@ -243,7 +243,11 @@
               <span class="tag">LLM • Cloud • DevOps</span>
             </div>
             <p>
-              Production-ready Discord AI assistant integrating an OpenAI-compatible LLM API with per-user memory summarisation, dynamic web-search fallback, and structured prompt tooling. Designed to participate naturally in server conversation through cached slang reactions, contextual interjections, rolling style analysis, and recent GIF reuse. Deployment evolved from a Google Cloud VM with PM2 process management to Railway-based cloud hosting.
+              Production-ready Discord AI assistant integrating an OpenAI-compatible LLM API with per-user memory summarisation, dynamic web-search fallback, and structured prompt tooling. Designed to participate naturally in server conversation through cached slang reactions, contextual interjections, rolling style analysis, and recent GIF reuse.
+            </p>
+            <p class="meta">
+              Hosted on Google Cloud Compute Engine with PM2 process management, environment-based
+              configuration, logging, and deployment updates through Git/GitHub.
             </p>
             <p class="meta">
               Not directly “click-to-open” (runs inside Discord). Architecture overview and screenshots available upon request.
