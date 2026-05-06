@@ -786,6 +786,12 @@ function shouldEndDraft() {
 function getLegalAvailableCards(player) {
   if (!player.commander) return [];
 
+  const nonCommanderTarget = game.finalDeckSize - 1;
+
+  if (player.picks.length >= nonCommanderTarget) {
+    return [];
+  }
+
   return game.pool.filter(
     card =>
       !game.pickedIds.has(card.id) &&

@@ -90,6 +90,15 @@ export async function onRequestPost(context) {
     }
 
     const picks = JSON.parse(currentPlayer.picks_json);
+    const nonCommanderTarget = state.room.final_deck_size - 1;
+
+    if (picks.length >= nonCommanderTarget) {
+      return Response.json(
+        { ok: false, error: "This player has already reached the deck size limit." },
+        { status: 400 }
+      );
+    }
+
     picks.push(card);
 
     state.pickedIds.add(cardId);
@@ -237,6 +246,13 @@ function getLegalAvailableCards(state, player) {
     || state.commanders.find(card => card.id === player.commander_id);
 
   if (!commander) return [];
+
+  const picks = JSON.parse(player.picks_json);
+  const nonCommanderTarget = state.room.final_deck_size - 1;
+
+  if (picks.length >= nonCommanderTarget) {
+    return [];
+  }
 
   return state.pool.filter(card =>
     !state.pickedIds.has(card.id) &&
