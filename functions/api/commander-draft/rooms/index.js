@@ -1,6 +1,7 @@
 export async function onRequestPost(context) {
   try {
     const db = context.env.commander_draft_db;
+    await cleanupExpiredRooms(db);
     const body = await context.request.json();
 
     const playerNames = body.playerNames || [
@@ -118,4 +119,20 @@ function makeRoomCode() {
   }
 
   return code;
+}
+
+async function cleanupExpiredRooms(db) {
+  await db.prepare(`
+    DELETE FROM draft_players
+    WHERE room_code IN (
+      SELECT room_code
+      FROM draft_rooms
+      WHERE updated_at < datetime('now', '-30 days')
+    )
+  `).run();
+
+  await db.prepare(`
+    DELETE FROM draft_rooms
+    WHERE updated_at < datetime('now', '-30 days')
+  `).run();
 }

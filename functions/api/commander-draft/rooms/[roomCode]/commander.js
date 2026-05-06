@@ -58,6 +58,12 @@ export async function onRequestPost(context) {
       AND player_index = ?
     `).bind(commanderId, roomCode, playerIndex).run();
 
+    await db.prepare(`
+      UPDATE draft_rooms
+      SET updated_at = CURRENT_TIMESTAMP
+      WHERE room_code = ?
+    `).bind(roomCode).run();
+
     return Response.json({
       ok: true,
     });

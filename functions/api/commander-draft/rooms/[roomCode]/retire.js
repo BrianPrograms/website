@@ -47,6 +47,12 @@ export async function onRequestPost(context) {
       );
     }
 
+    await db.prepare(`
+      UPDATE draft_rooms
+      SET updated_at = CURRENT_TIMESTAMP
+      WHERE room_code = ?
+    `).bind(roomCode).run();
+
     return Response.json({
       ok: true,
     });
