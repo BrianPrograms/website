@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Commander Chaos Draft</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div>
+      <h1>Commander Chaos Draft</h1>
+      <p> Online commander chaos draft using a random pool of cards from Scryfall.</p>
+    </div>
+    <button id="resetBtn" class="danger hidden">Reset</button>
+  </header>
+
+  <main>
+    <section id="roomInfo" class="panel hidden room-info">
+      <h2>Room</h2>
+      <p id="roomCodeText"></p>
+      <p>
+        Share this link:
+        <input id="shareLink" readonly />
+      </p>
+      <button id="copyLinkBtn">Copy Link</button>
+      <button id="refreshRoomBtn">Refresh Room</button>
+    </section>
+
+    <section id="setupScreen" class="panel">
+      <h2>Online Draft Room</h2>
+
+      <h3>Create Room</h3>
+
+      <label>Player 1 <input id="player1" value="Player 1" /></label>
+      <label>Player 2 <input id="player2" value="Player 2" /></label>
+      <label>Player 3 <input id="player3" value="Player 3" /></label>
+      <label>Player 4 <input id="player4" value="Player 4" /></label>
+
+      <label>
+        Draft pool size
+        <input id="poolSize" type="number" value="120" min="40" max="400" />
+      </label>
+
+      <label>
+        Final deck size including commander
+        <input id="finalDeckSize" type="number" value="100" min="40" max="100" />
+      </label>
+
+      <label class="checkbox-row">
+        <input id="includeBanned" type="checkbox" />
+        Include Commander-banned cards, chaos mode
+      </label>
+
+      <button id="startBtn">Create Online Room</button>
+
+      <hr />
+
+      <h3>Load Existing Room</h3>
+
+      <label>
+        Room code
+        <input id="roomCodeInput" placeholder="e.g. CVXQHF" />
+      </label>
+
+      <button id="loadRoomBtn">Load Room</button>
+
+      <p id="loadingText" class="muted"></p>
+    </section>
+
+    <section id="commanderScreen" class="hidden">
+      <div class="status-bar">
+        <div>
+          <h2>Blind Commander Selection</h2>
+          <p>Each player secretly chooses one commander. Duplicate choices are punished.</p>
+        </div>
+        <button id="resolveCommandersBtn">Resolve Commanders</button>
+      </div>
+
+      <div id="commanderChoices" class="commander-choices"></div>
+      <h3>Available Commanders</h3>
+      <div id="commanderGrid" class="card-grid"></div>
+    </section>
+
+    <section id="draftScreen" class="hidden">
+      <div class="status-bar">
+        <div>
+          <h2 id="draftTitle">Draft</h2>
+          <p id="turnText"></p>
+        </div>
+
+        <div class="controls">
+          <select id="viewMode">
+            <option value="legal">Remaining Legal</option>
+            <option value="all">Remaining All</option>
+            <option value="drafted">Drafted Cards</option>
+          </select>
+
+          <input id="searchInput" placeholder="Search cards..." />
+
+          <select id="typeFilter">
+            <option value="">All types</option>
+            <option value="Creature">Creatures</option>
+            <option value="Instant">Instants</option>
+            <option value="Sorcery">Sorceries</option>
+            <option value="Artifact">Artifacts</option>
+            <option value="Enchantment">Enchantments</option>
+            <option value="Planeswalker">Planeswalkers</option>
+            <option value="Land">Lands</option>
+          </select>
+
+          <select id="sortMode">
+            <option value="name">Sort: Name</option>
+            <option value="mv">Sort: Mana Value</option>
+            <option value="type">Sort: Type</option>
+            <option value="color">Sort: Colour</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="layout">
+        <aside class="players-panel">
+          <h3>Players</h3>
+          <div id="playersList"></div>
+        </aside>
+
+        <section>
+          <div id="draftedView" class="hidden"></div>
+          <div id="draftGrid" class="card-grid"></div>
+        </section>
+
+        <aside class="preview-panel">
+          <h3>Preview</h3>
+          <div id="cardPreview" class="card-preview muted">Hover over a card.</div>
+
+          <hr />
+
+          <h3>Current Player Deck</h3>
+          <div id="currentDeckList" class="mini-list"></div>
+
+          <button id="retireBtn" class="danger full-width">Stop Drafting & Fill Basics</button>
+        </aside>
+      </div>
+    </section>
+
+    <section id="landsScreen" class="hidden">
+      <div class="status-bar">
+        <div>
+          <h2>Basic Land Split</h2>
+          <p>Choose each player’s basic land split before exporting.</p>
+        </div>
+        <button id="finishBtn">Finish & Export</button>
+      </div>
+
+      <div id="landSplitArea" class="decklists"></div>
+    </section>
+
+    <section id="completeScreen" class="hidden">
+      <div class="status-bar">
+        <div>
+          <h2>Draft Complete</h2>
+          <p>Copy each decklist below.</p>
+        </div>
+      </div>
+
+      <div id="decklists" class="decklists"></div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

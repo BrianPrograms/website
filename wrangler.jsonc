@@ -1,0 +1,12 @@
+{
+  "name": "website",
+  "compatibility_date": "2025-12-01",
+  "pages_build_output_dir": ".",
+  "d1_databases": [
+    {
+      "binding": "commander_draft_db",
+      "database_name": "commander-draft-db",
+      "database_id": "952b7530-ba64-4389-b6d1-d27f4bde7ede"
+    }
+  ]
+}
