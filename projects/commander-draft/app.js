@@ -97,6 +97,16 @@ async function createOnlineRoom() {
   const finalDeckSize = Number(document.getElementById("finalDeckSize").value);
   const includeBanned = document.getElementById("includeBanned").checked;
 
+  if (!Number.isInteger(poolSize) || poolSize < 40 || poolSize > 400) {
+    alert("Draft pool size must be a whole number between 40 and 1000.");
+    return;
+  }
+
+  if (!Number.isInteger(finalDeckSize) || finalDeckSize < 40 || finalDeckSize > 100) {
+    alert("Final deck size must be a whole number between 40 and 100.");
+    return;
+  }
+
   els.startBtn.disabled = true;
   els.loadingText.textContent = "Generating Scryfall card pool in browser...";
 
