@@ -11,6 +11,7 @@ const game = {
   finalDeckSize: 100,
   includeBanned: false,
   phase: "setup",
+  claimedPlayerIndex: null,
 };
 
 const els = {
@@ -23,8 +24,10 @@ const els = {
   roomInfo: document.getElementById("roomInfo"),
   roomCodeText: document.getElementById("roomCodeText"),
   shareLink: document.getElementById("shareLink"),
+  copyRoomCodeBtn: document.getElementById("copyRoomCodeBtn"),
   copyLinkBtn: document.getElementById("copyLinkBtn"),
   refreshRoomBtn: document.getElementById("refreshRoomBtn"),
+  claimSlotArea: document.getElementById("claimSlotArea"),
 
   startBtn: document.getElementById("startBtn"),
   loadRoomBtn: document.getElementById("loadRoomBtn"),
@@ -59,6 +62,7 @@ els.resetBtn.addEventListener("click", () => {
   window.location.href = window.location.pathname;
 });
 
+els.copyRoomCodeBtn.addEventListener("click", copyRoomCode);
 els.copyLinkBtn.addEventListener("click", copyShareLink);
 els.refreshRoomBtn.addEventListener("click", () => loadRoom(game.roomCode));
 
@@ -194,6 +198,9 @@ function applyRoomState(room) {
   els.roomInfo.classList.remove("hidden");
   els.roomCodeText.textContent = `Room code: ${game.roomCode}`;
   els.shareLink.value = `${window.location.origin}${window.location.pathname}?room=${game.roomCode}`;
+
+  loadClaimedPlayerIndex();
+  renderClaimSlotArea();
 }
 
 function renderCurrentPhase() {
@@ -417,18 +424,17 @@ function renderCommanderSelection() {
 }
 
 async function chooseCommanderForPlayerOnline(commander) {
-  const playerNumber = prompt(
-    `Who is choosing ${commander.name}?\nEnter player number 1-4.`
-  );
+  const player = getClaimedPlayer();
 
-  const playerIndex = Number(playerNumber) - 1;
-
-  if (playerIndex < 0 || playerIndex >= game.players.length || Number.isNaN(playerIndex)) {
-    alert("Invalid player number.");
+  if (!player) {
+    alert("Claim a player slot first.");
     return;
   }
 
-  const player = game.players[playerIndex];
+  if (game.phase !== "commander_selection") {
+    alert("Commander selection is closed.");
+    return;
+  }
 
   const ok = confirm(`${player.name} will secretly choose this commander. Continue?`);
 
@@ -440,7 +446,7 @@ async function chooseCommanderForPlayerOnline(commander) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      playerIndex,
+      playerIndex: player.playerIndex,
       commanderId: commander.id,
     }),
   });
@@ -498,6 +504,16 @@ function renderDraft() {
   els.draftTitle.textContent = `Room ${game.roomCode} — Round ${game.draftRound + 1} ${direction}`;
   els.turnText.textContent =
     `${currentPlayer.name}'s turn — ${legalCount} legal choices available.`;
+  
+  const claimedPlayer = getClaimedPlayer();
+
+  if (!claimedPlayer) {
+    els.turnText.textContent += " Claim your player slot to draft.";
+  } else if (claimedPlayer.playerIndex !== currentPlayer.playerIndex) {
+    els.turnText.textContent += ` You are ${claimedPlayer.name}; waiting for ${currentPlayer.name}.`;
+  } else {
+    els.turnText.textContent += " It is your turn.";
+  }
 
   renderPlayers();
   renderCurrentDeck(currentPlayer);
@@ -570,13 +586,18 @@ function renderDraftGrid(player) {
     return;
   }
 
+  const claimedPlayer = getClaimedPlayer();
+  const isYourTurn =
+    claimedPlayer && claimedPlayer.playerIndex === player.playerIndex;
+
   for (const card of cards) {
     const legal = isLegalForCommander(card, player.commander);
+    const canDraft = legal && isYourTurn;
 
     els.draftGrid.appendChild(
       createCardElement(card, {
-        buttonText: legal ? "Draft" : "Illegal",
-        disabled: !legal,
+        buttonText: !legal ? "Illegal" : isYourTurn ? "Draft" : "Waiting",
+        disabled: !canDraft,
         illegal: !legal,
         onClick: () => draftCardOnline(card),
       })
@@ -622,21 +643,35 @@ function renderCurrentDeck(player) {
 }
 
 async function draftCardOnline(card) {
-  const player = getCurrentDraftPlayer();
+  const currentPlayer = getCurrentDraftPlayer();
+  const claimedPlayer = getClaimedPlayer();
 
-  if (!player) return;
+  if (!claimedPlayer) {
+    alert("Claim a player slot first.");
+    return;
+  }
 
-  const ok = confirm(`${player.name} drafts ${card.name}?`);
+  if (!currentPlayer) {
+    alert("The draft is finished.");
+    return;
+  }
+
+  if (claimedPlayer.playerIndex !== currentPlayer.playerIndex) {
+    alert(`It is currently ${currentPlayer.name}'s turn.`);
+    return;
+  }
+
+  const ok = confirm(`${claimedPlayer.name} drafts ${card.name}?`);
 
   if (!ok) return;
-
+  
   const res = await fetch(`/api/commander-draft/rooms/${game.roomCode}/pick`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      playerIndex: player.playerIndex,
+      playerIndex: claimedPlayer.playerIndex,
       cardId: card.id,
     }),
   });
@@ -653,12 +688,26 @@ async function draftCardOnline(card) {
 }
 
 async function retireCurrentPlayerOnline() {
-  const player = getCurrentDraftPlayer();
+  const currentPlayer = getCurrentDraftPlayer();
+  const claimedPlayer = getClaimedPlayer();
 
-  if (!player) return;
+  if (!claimedPlayer) {
+    alert("Claim a player slot first.");
+    return;
+  }
+
+  if (!currentPlayer) {
+    alert("The draft is finished.");
+    return;
+  }
+
+  if (claimedPlayer.playerIndex !== currentPlayer.playerIndex) {
+    alert(`It is currently ${currentPlayer.name}'s turn.`);
+    return;
+  }
 
   const ok = confirm(
-    `${player.name} will stop drafting and fill the rest with basics. Continue?`
+    `${claimedPlayer.name} will stop drafting and fill the rest with basics. Continue?`
   );
 
   if (!ok) return;
@@ -669,7 +718,7 @@ async function retireCurrentPlayerOnline() {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      playerIndex: player.playerIndex,
+      playerIndex: claimedPlayer.playerIndex,
     }),
   });
 
@@ -834,6 +883,13 @@ function renderLandSplit() {
       inputArea.appendChild(row);
     }
 
+    const claimedPlayer = getClaimedPlayer();
+    const canSave =
+      claimedPlayer && claimedPlayer.playerIndex === player.playerIndex;
+
+    saveButton.disabled = !canSave;
+    saveButton.textContent = canSave ? "Save My Land Split" : "Claim this slot to save";
+
     saveButton.addEventListener("click", () => saveLandSplitOnline(player));
 
     updateSplitText(player, needed, totalText);
@@ -851,6 +907,18 @@ function updateSplitText(player, needed, totalText) {
 }
 
 async function saveLandSplitOnline(player) {
+  const claimedPlayer = getClaimedPlayer();
+
+  if (!claimedPlayer) {
+    alert("Claim a player slot first.");
+    return;
+  }
+
+  if (claimedPlayer.playerIndex !== player.playerIndex) {
+    alert("You can only save the land split for your claimed player slot.");
+    return;
+  }
+
   const needed = getNeededBasics(player);
   const total = Object.values(player.landSplit).reduce((a, b) => a + b, 0);
 
@@ -1039,6 +1107,116 @@ function renderColorPips(colors) {
         .join("")}
     </div>
   `;
+}
+
+function getClaimStorageKey() {
+  return `commander-draft-${game.roomCode}-player`;
+}
+
+function loadClaimedPlayerIndex() {
+  if (!game.roomCode) {
+    game.claimedPlayerIndex = null;
+    return;
+  }
+
+  const saved = localStorage.getItem(getClaimStorageKey());
+
+  if (saved === null) {
+    game.claimedPlayerIndex = null;
+    return;
+  }
+
+  const playerIndex = Number(saved);
+  const exists = game.players.some(player => player.playerIndex === playerIndex);
+
+  game.claimedPlayerIndex = exists ? playerIndex : null;
+}
+
+function claimPlayerSlot(playerIndex) {
+  localStorage.setItem(getClaimStorageKey(), String(playerIndex));
+  game.claimedPlayerIndex = playerIndex;
+  renderClaimSlotArea();
+  renderCurrentPhase();
+}
+
+function unclaimPlayerSlot() {
+  localStorage.removeItem(getClaimStorageKey());
+  game.claimedPlayerIndex = null;
+  renderClaimSlotArea();
+  renderCurrentPhase();
+}
+
+function getClaimedPlayer() {
+  if (game.claimedPlayerIndex === null) {
+    return null;
+  }
+
+  return game.players.find(player => player.playerIndex === game.claimedPlayerIndex) || null;
+}
+
+function renderClaimSlotArea() {
+  if (!game.roomCode || !els.claimSlotArea) {
+    return;
+  }
+
+  const claimedPlayer = getClaimedPlayer();
+
+  let html = "";
+
+  if (claimedPlayer) {
+    html += `
+      <div class="claim-status">
+        <p class="success"><strong>You are claiming:</strong> ${escapeHtml(claimedPlayer.name)}</p>
+        <p class="muted">This claim is saved only in this browser.</p>
+        <button id="unclaimSlotBtn" class="danger">Change Player Slot</button>
+      </div>
+    `;
+  } else {
+    html += `
+      <div class="claim-status">
+        <p class="warning"><strong>No player slot claimed.</strong></p>
+        <p class="muted">Claim your slot before choosing a commander, drafting, retiring, or saving lands.</p>
+      </div>
+    `;
+  }
+
+  html += `<div class="claim-buttons">`;
+
+  for (const player of game.players) {
+    const isClaimed = claimedPlayer && claimedPlayer.playerIndex === player.playerIndex;
+
+    html += `
+      <button
+        class="claim-button ${isClaimed ? "claimed" : ""}"
+        data-player-index="${player.playerIndex}"
+      >
+        ${isClaimed ? "Claimed: " : "Claim "}
+        ${escapeHtml(player.name)}
+      </button>
+    `;
+  }
+
+  html += `</div>`;
+
+  els.claimSlotArea.innerHTML = html;
+
+  for (const button of els.claimSlotArea.querySelectorAll(".claim-button")) {
+    button.addEventListener("click", () => {
+      const playerIndex = Number(button.dataset.playerIndex);
+      claimPlayerSlot(playerIndex);
+    });
+  }
+
+  const unclaimButton = document.getElementById("unclaimSlotBtn");
+
+  if (unclaimButton) {
+    unclaimButton.addEventListener("click", unclaimPlayerSlot);
+  }
+}
+
+function copyRoomCode() {
+  navigator.clipboard.writeText(game.roomCode);
+  alert("Room code copied.");
 }
 
 function copyShareLink() {

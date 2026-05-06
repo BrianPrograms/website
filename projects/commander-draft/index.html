@@ -19,13 +19,23 @@
     <section id="roomInfo" class="panel hidden room-info">
       <h2>Room</h2>
       <p class="muted">Rooms expire after 30 days of inactivity.</p>
+
       <p id="roomCodeText"></p>
-      <p>
+
+      <div class="room-actions">
+        <button id="copyRoomCodeBtn">Copy Room Code</button>
+        <button id="copyLinkBtn">Copy Room Link</button>
+        <button id="refreshRoomBtn">Refresh Room</button>
+      </div>
+
+      <label>
         Share this link:
         <input id="shareLink" readonly />
-      </p>
-      <button id="copyLinkBtn">Copy Link</button>
-      <button id="refreshRoomBtn">Refresh Room</button>
+      </label>
+
+      <hr />
+
+      <div id="claimSlotArea"></div>
     </section>
 
     <section id="setupScreen" class="panel">

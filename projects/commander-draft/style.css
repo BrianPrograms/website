@@ -354,3 +354,46 @@ hr {
 .warning {
   color: #ffd27d;
 }
+
+.room-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.claim-slot-area {
+  display: grid;
+  gap: 12px;
+}
+
+.claim-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.claim-button {
+  background: #222231;
+  border: 1px solid #44445a;
+}
+
+.claim-button.claimed {
+  background: #6c63ff;
+  border-color: #6c63ff;
+}
+
+.claim-status {
+  padding: 12px;
+  border-radius: 12px;
+  background: #222231;
+  border: 1px solid #44445a;
+}
+
+.success {
+  color: #9be59b;
+}
+
+.warning {
+  color: #ffd27d;
+}
