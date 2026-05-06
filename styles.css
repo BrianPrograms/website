@@ -288,3 +288,28 @@ code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
   font-size: 0.95em;
 }
+
+.featured-project {
+  position: relative;
+  overflow: hidden;
+  border-color: rgba(122, 167, 255, 0.55);
+  box-shadow: 0 0 0 1px rgba(122, 167, 255, 0.08),
+              0 18px 45px rgba(0, 0, 0, 0.18);
+}
+
+.featured-project::before {
+  content: "New";
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--bg);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.featured-project .card-top {
+  padding-right: 54px;
+}
