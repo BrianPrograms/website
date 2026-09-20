@@ -1,7 +1,9 @@
 {
   "scripts": {
     "test": "node --test tests/make-10/*.test.mjs",
-    "make10:exhaustive": "node scripts/make10-exhaustive.mjs"
+    "make10:exhaustive": "node scripts/make10-exhaustive.mjs",
+    "make10:freeze": "node scripts/make10-freeze.mjs",
+    "make10:verify-sequence": "node scripts/make10-verify-sequence.mjs"
   },
   "devDependencies": {
     "wrangler": "^4.88.0"
