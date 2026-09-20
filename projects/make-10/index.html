@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1020">
+  <title>Make 10 — Brian's Projects</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="make10">
+  <main class="game">
+    <header><a class="back" href="/" aria-label="Back to portfolio" title="Back to portfolio">←</a><h1>Make <span>10</span></h1></header>
+    <section class="stage" aria-label="Make 10 puzzle">
+      <div id="equation" class="equation" role="group" aria-label="Expression"></div>
+      <button id="evaluation" class="evaluation" hidden aria-label="Evaluation result"></button>
+    </section>
+    <div id="tools" class="tools" role="group" aria-label="Arithmetic tools"></div>
+    <div class="edits">
+      <button id="erase" aria-label="Erase mode" aria-pressed="false" title="Erase symbols">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 3 6 6-11 11H5l-3-3L15 3Z M7 12l6 6 M10 20h11"/></svg>
+      </button>
+      <button id="reset" aria-label="Clear expression" title="Clear expression">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16 M9 6V3h6v3 M6 6l1 15h10l1-15 M10 10v7 M14 10v7"/></svg>
+      </button>
+    </div>
+    <p id="notice" class="notice" aria-live="polite"></p>
+    <p id="announcement" class="sr-only" aria-live="polite" aria-atomic="true"></p>
+  </main>
+  <div id="drag-preview" class="drag-preview" hidden aria-hidden="true"></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
