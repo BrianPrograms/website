@@ -1,12 +1,35 @@
 {
-  "name": "website",
-  "compatibility_date": "2025-12-01",
-  "pages_build_output_dir": ".",
-  "d1_databases": [
-    {
-      "binding": "commander_draft_db",
-      "database_name": "commander-draft-db",
-      "database_id": "952b7530-ba64-4389-b6d1-d27f4bde7ede"
-    }
-  ]
+	"name": "website",
+	"compatibility_date": "2025-12-01",
+	"pages_build_output_dir": ".",
+	"d1_databases": [
+		{
+			"binding": "commander_draft_db",
+			"database_name": "commander-draft-db",
+			"database_id": "952b7530-ba64-4389-b6d1-d27f4bde7ede"
+		},
+		{
+			"binding": "make10_db",
+			"database_name": "make10-db",
+			"database_id": "4d873aa1-5eac-4f2e-a0b0-84d46dec0ad6",
+			"migrations_dir": "make10-migrations"
+		}
+	],
+	"env": {
+		"preview": {
+			"d1_databases": [
+				{
+					"binding": "commander_draft_db",
+					"database_name": "commander-draft-db",
+					"database_id": "952b7530-ba64-4389-b6d1-d27f4bde7ede"
+				},
+				{
+					"binding": "make10_db",
+					"database_name": "make10-db-preview",
+					"database_id": "bd002a39-5ec1-49a0-837c-b26be92684a8",
+					"migrations_dir": "make10-migrations"
+				}
+			]
+		}
+	}
 }

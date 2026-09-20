@@ -3,3 +3,4 @@ node_modules/
 .DS_Store
 # Never commit private Make 10 exports, even if copied into the repository.
 .make10-private/
+.wrangler/

@@ -3,7 +3,10 @@
     "test": "node --test tests/make-10/*.test.mjs",
     "make10:exhaustive": "node scripts/make10-exhaustive.mjs",
     "make10:freeze": "node scripts/make10-freeze.mjs",
-    "make10:verify-sequence": "node scripts/make10-verify-sequence.mjs"
+    "make10:verify-sequence": "node scripts/make10-verify-sequence.mjs",
+    "make10:db:migrate": "node scripts/make10-db.mjs migrate",
+    "make10:db:seed": "node scripts/make10-db.mjs seed",
+    "make10:db:verify": "node scripts/make10-db.mjs verify"
   },
   "devDependencies": {
     "wrangler": "^4.88.0"
