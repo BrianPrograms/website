@@ -1,10 +1,12 @@
 import { parse, evaluate, reductionSteps } from '../engine/expression.mjs';
 import { equal, rational, text } from '../engine/rational.mjs';
 
-export const DIGITS = Object.freeze([1, 3, 5, 0]);
 export const OPERATORS = Object.freeze(['+', '-', '*', '/']);
 export const symbols = source => source.replaceAll('*', '×').replaceAll('/', '÷').replaceAll('-', '−');
-export const initialState = () => ({ operators: [null, null, null], negative: [false, false, false, false], groups: [], pending: [], nextId: 1 });
+export function initialState(puzzle) {
+  if (typeof puzzle !== 'string' || puzzle.length !== 4 || !/^\d{4}$/.test(puzzle)) throw new TypeError('Expected a four-digit puzzle string');
+  return { puzzle, operators: [null, null, null], negative: [false, false, false, false], groups: [], pending: [], nextId: 1 };
+}
 const crosses = (a, b) => (a.start < b.start && b.start <= a.end && a.end < b.end) ||
   (b.start < a.start && a.start <= b.end && b.end < a.end);
 
@@ -26,7 +28,7 @@ export function edit(state, action) {
   const next = structuredClone(state);
   const index = action.index;
   switch (action.type) {
-    case 'reset': return initialState();
+    case 'reset': return initialState(state.puzzle);
     case 'operator':
       if (Number.isInteger(index) && index >= 0 && index < 3 && (action.value === null || OPERATORS.includes(action.value))) next.operators[index] = action.value;
       break;
@@ -53,7 +55,7 @@ export function edit(state, action) {
 }
 
 export function expression(state) {
-  return DIGITS.map((d, i) => {
+  return [...state.puzzle].map((d, i) => {
     const opens = state.groups.filter(g => g.start === i).sort((a, b) => b.end - a.end || a.id - b.id);
     const closes = state.groups.filter(g => g.end === i);
     return opens.map(g => g.negative ? '-(' : '(').join('') +
@@ -68,7 +70,7 @@ export function inspect(state) {
   const source = expression(state);
   if (missing || unclosed) return { status: 'incomplete', source, missing, unclosed };
   try {
-    const ast = parse(source, '1350');
+    const ast = parse(source, state.puzzle);
     const value = evaluate(ast);
     if (value === null) return { status: 'undefined', source };
     return { status: equal(value, rational(10)) ? 'correct' : 'different', source, result: text(value), steps: reductionSteps(ast) };

@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { initialState, edit } from '../../projects/make-10/ui/editor.mjs';
+import { initialState as createState, edit } from '../../projects/make-10/ui/editor.mjs';
+const initialState = () => createState('1350');
 import { idle, submit, advance, resume } from '../../projects/make-10/ui/playback.mjs';
 const ops=values=>values.reduce((state,value,index)=>edit(state,{type:'operator',index,value}),initialState());
 test('submission rejects incomplete and undefined expressions',()=>{

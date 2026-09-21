@@ -1,9 +1,11 @@
-import { DIGITS, OPERATORS, initialState, edit, canOpen, canClose, inspect, symbols } from './ui/editor.mjs';
+import { OPERATORS, initialState, edit, canOpen, canClose, inspect, symbols } from './ui/editor.mjs';
 import { idle, submit, advance, resume } from './ui/playback.mjs';
+import { createPuzzleController, archiveLabel } from './ui/puzzles.mjs';
+import { setupArchive } from './ui/archive.mjs';
 
 const $ = id => document.getElementById(id);
 const names = { '+':'Add', '-':'Minus', '*':'Multiply', '/':'Divide', '(':'Open parenthesis', ')':'Close parenthesis' };
-let state = initialState();
+let state = null;
 let selected = null;
 let erasing = false;
 let playback = idle();
@@ -61,7 +63,8 @@ function renderEquation() {
   const pristine = state.operators.every(op=>op===null) && !state.negative.some(Boolean) && !state.groups.length && !state.pending.length;
   row.classList.toggle('pristine',pristine);
   row.replaceChildren();
-  DIGITS.forEach((digit,index)=>{
+  const digits = [...state.puzzle];
+  digits.forEach((digit,index)=>{
     const operand = document.createElement('span'); operand.className = 'operand';
     const opens = [...state.groups,...state.pending].filter(g=>g.start===index).sort((a,b)=>(b.end??4)-(a.end??4)||a.id-b.id);
     opens.forEach((g,lane)=>{
@@ -89,7 +92,7 @@ function renderEquation() {
     if (index < 3) {
       const value = state.operators[index];
       const active = allowed('operator',index);
-      const slot = button(`Operator ${index+1}, between ${digit} and ${DIGITS[index+1]}${value ? `: ${symbols(value)}` : ': empty'}`,value ? symbols(value) : '',`binary ${value ? '' : 'empty'} ${active ? 'target' : ''} ${erasing && value ? 'erasable' : ''}`,`operator-${index}`);
+      const slot = button(`Operator ${index+1}, between ${digit} and ${digits[index+1]}${value ? `: ${symbols(value)}` : ': empty'}`,value ? symbols(value) : '',`binary ${value ? '' : 'empty'} ${active ? 'target' : ''} ${erasing && value ? 'erasable' : ''}`,`operator-${index}`);
       slot.tabIndex = active || (erasing && value) ? 0 : -1;
       slot.setAttribute('aria-disabled',String(!active && !(erasing && value)));
       slot.dataset.target='operator'; slot.dataset.index=index;
@@ -113,11 +116,13 @@ function renderEquation() {
 
 function render() {
   const focusKey = document.activeElement?.dataset.key;
-  const editing = playback.phase === 'editing';
+  const editing = Boolean(state) && playback.phase === 'editing';
   $('equation').hidden = !editing;
-  $('evaluation').hidden = editing;
+  $('evaluation').hidden = !state || editing;
   for (const tool of $('tools').children) { tool.disabled=!editing; tool.setAttribute('aria-pressed',String(selected===tool.dataset.tool)); }
   $('erase').disabled=!editing; $('erase').setAttribute('aria-pressed',String(erasing));
+  $('reset').disabled = !state;
+  if (!state) return;
   if (editing) {
     renderEquation();
     if (focusKey && focusKey.indexOf('tool-') !== 0) {
@@ -206,10 +211,40 @@ for (const tool of [...OPERATORS,'(',')']) {
 }
 $('erase').addEventListener('click',()=>{selected=null;erasing=!erasing;render();});
 $('reset').addEventListener('click',()=>{
-  clearTimeout(timer);finishDrag(true);state=initialState();playback=idle();selected=null;erasing=false;render();$('announcement').textContent='Expression cleared.';
+  clearTimeout(timer);finishDrag(true);state=initialState(state.puzzle);playback=idle();selected=null;erasing=false;render();$('announcement').textContent='Expression cleared.';
 });
 document.addEventListener('keydown',event=>{
-  if(event.key==='Escape'){finishDrag(true);selected=null;erasing=false;render();}
+  if(event.key==='Escape' && !$('calendar').open){finishDrag(true);selected=null;erasing=false;render();}
 });
 window.addEventListener('blur',()=>finishDrag(true));
+let archive;
+const puzzles = createPuzzleController({
+  onPuzzle(nextState) {
+    clearTimeout(timer); timer=null; finishDrag(true);
+    state=nextState; playback=idle(); selected=null; erasing=false;
+    render();
+    if (!reducedMotion.matches) $('equation').animate([{opacity:0},{opacity:1}], {duration:220});
+    $('announcement').textContent = 'Puzzle loaded.';
+  },
+  onChange(view) {
+    $('load-state').hidden = Boolean(view.active);
+    $('load-message').textContent = view.initialError ? "Couldn't load today's puzzle" : 'Loading…';
+    $('retry').hidden = !view.initialError; $('retry').disabled = view.loading;
+    $('archive').disabled = !view.daily;
+    const label = archiveLabel(view.active, view.daily);
+    $('archive-date').textContent = label; $('archive-date').hidden = !label;
+    archive?.render(view);
+  },
+});
+archive = setupArchive(puzzles);
+$('retry').addEventListener('click', () => puzzles.start());
+let lastCheck = 0;
+function checkDaily() {
+  if (document.visibilityState !== 'visible' || Date.now() - lastCheck < 30000) return;
+  lastCheck = Date.now(); void puzzles.refresh();
+}
+window.addEventListener('focus', checkDaily);
+document.addEventListener('visibilitychange', checkDaily);
+setInterval(checkDaily, 5 * 60 * 1000);
 render();
+void puzzles.start();

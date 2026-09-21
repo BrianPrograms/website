@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { initialState, edit, inspect, expression, canClose, canOpen } from '../../projects/make-10/ui/editor.mjs';
+import { initialState as createState, edit, inspect, expression, canClose, canOpen } from '../../projects/make-10/ui/editor.mjs';
+const initialState = () => createState('1350');
 const operators = (ops) => ops.reduce((s,value,index) => edit(s,{type:'operator',index,value}), initialState());
 const group = (s,start,end) => edit(edit(s,{type:'open',index:start}),{type:'close',index:end});
 

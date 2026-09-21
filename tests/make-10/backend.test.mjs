@@ -34,7 +34,7 @@ test('daily launch/next Sydney day and leading-zero strings survive real SQLite 
     const h = harness('2026-01-01', instant);
     try {
       const result = await h.request('?date=2099-01-01&timezone=UTC&now=2099-01-01');
-      assert.deepEqual(result, { status: 200, body: { date, puzzle, ruleset: 'basic-v1' } });
+      assert.deepEqual(result, { status: 200, body: { date, puzzle, ruleset: 'basic-v1', launchDate: '2026-01-01' } });
       assert.deepEqual(h.calls[0].args, ['basic-v1', index]);
       assert.match(h.calls[0].sql, /ruleset = \? AND sequence_index = \?/);
     } finally { h.db.close(); }
@@ -48,7 +48,7 @@ test('daily DST and leap-day mapping reuse Sydney calendar dates', async () => {
     ['2024-02-28', '2024-02-28T13:00:00Z', '2024-02-29'],
   ]) {
     const h = harness(launch, instant);
-    try { assert.deepEqual(await h.request(), { status: 200, body: { date, puzzle: '0028', ruleset: 'basic-v1' } }); }
+    try { assert.deepEqual(await h.request(), { status: 200, body: { date, puzzle: '0028', ruleset: 'basic-v1', launchDate: launch } }); }
     finally { h.db.close(); }
   }
 });

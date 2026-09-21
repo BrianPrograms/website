@@ -10,10 +10,18 @@
 </head>
 <body class="make10">
   <main class="game">
-    <header><a class="back" href="/" aria-label="Back to portfolio" title="Back to portfolio">←</a><h1>Make <span>10</span></h1></header>
+    <header>
+      <a class="back" href="/" aria-label="Back to portfolio" title="Back to portfolio">←</a>
+      <h1>Make <span>10</span></h1>
+      <span id="archive-date" class="archive-date" hidden></span>
+      <button id="archive" class="archive-button" aria-label="Open archive" title="Open archive" aria-haspopup="dialog" disabled>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4 M17 3v4 M3 10h18 M7 14h2 M12 14h2 M7 17h2"/></svg>
+      </button>
+    </header>
     <section class="stage" aria-label="Make 10 puzzle">
       <div id="equation" class="equation" role="group" aria-label="Expression"></div>
       <button id="evaluation" class="evaluation" hidden aria-label="Evaluation result"></button>
+      <div id="load-state" class="load-state"><p id="load-message" role="status">Loading…</p><button id="retry" hidden>Retry</button></div>
     </section>
     <div id="tools" class="tools" role="group" aria-label="Arithmetic tools"></div>
     <div class="edits">
@@ -28,6 +36,13 @@
     <p id="announcement" class="sr-only" aria-live="polite" aria-atomic="true"></p>
   </main>
   <div id="drag-preview" class="drag-preview" hidden aria-hidden="true"></div>
+  <dialog id="calendar" class="calendar" aria-label="Puzzle archive">
+    <div class="calendar-heading"><h2 id="calendar-month" aria-live="polite"></h2><button id="calendar-close" aria-label="Close archive">×</button></div>
+    <div class="calendar-navigation"><button id="previous-month" aria-label="Previous month">←</button><button id="calendar-today">Today</button><button id="next-month" aria-label="Next month">→</button></div>
+    <div class="weekdays" aria-hidden="true"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+    <div id="calendar-days" class="calendar-days" role="group" aria-label="Choose a puzzle date"></div>
+    <p id="calendar-status" class="calendar-status" role="status" aria-live="polite"></p>
+  </dialog>
   <script type="module" src="app.js"></script>
 </body>
 </html>

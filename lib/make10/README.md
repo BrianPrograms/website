@@ -1,8 +1,9 @@
 # Make 10 Stage 4 backend
 
-This stage adds read-only daily/archive APIs and a dedicated D1 schedule. No
-frontend integration, player data, submissions, statistics or production launch
-date is included. The fixed `1350` frontend and mathematical engine are unchanged.
+This stage adds read-only daily/archive APIs and a dedicated D1 schedule. The
+subsequent Stage 5 frontend is documented in `projects/make-10/README.md`.
+No player data, submissions, statistics or production launch date is included.
+The mathematical engine is unchanged.
 
 ## Targets and configuration
 
@@ -93,7 +94,9 @@ calendar-day indexing preserve correct DST behavior. No sequence wrapping.
 - `GET /api/make-10/daily`: current server-side Sydney day.
 - `GET /api/make-10/puzzle?date=YYYY-MM-DD`: exactly one strict date parameter;
   allows launch through today, within available sequence bounds.
-- Success: HTTP 200, only `{ "date": "YYYY-MM-DD", "puzzle": "0019", "ruleset": "basic-v1" }`
+- Success: HTTP 200, `{ "date": "YYYY-MM-DD", "puzzle": "0019", "ruleset": "basic-v1" }`.
+  The daily route additionally returns `launchDate` for archive bounds; the
+  archive route retains the original response shape.
   (puzzle above is a synthetic example, not a schedule disclosure).
 - Invalid/missing/duplicate requested date: 400 `{ "error": "invalid_date" }`.
 - Before launch, future, or exhausted: 404 `{ "error": "not_available" }`.
