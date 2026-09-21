@@ -16,12 +16,12 @@ export function shiftMonth(month, delta) {
   const date = dateObject(`${month}-01`); date.setUTCMonth(date.getUTCMonth() + delta);
   return date.toISOString().slice(0, 7);
 }
-export function monthCells(month, daily, active) {
+export function monthCells(month, daily, active, solvedDates = new Set()) {
   const first = dateObject(`${month}-01`), cells = Array((first.getUTCDay() + 6) % 7).fill(null);
   const date = new Date(first);
   while (date.getUTCMonth() === first.getUTCMonth()) {
     const value = date.toISOString().slice(0, 10);
-    cells.push({ date: value, day: date.getUTCDate(), disabled: !availableDate(value, daily), today: value === daily?.date, selected: value === active?.date });
+    cells.push({ date: value, day: date.getUTCDate(), disabled: !availableDate(value, daily), today: value === daily?.date, selected: value === active?.date, solved: availableDate(value,daily) && solvedDates.has(value) });
     date.setUTCDate(date.getUTCDate() + 1);
   }
   return cells;

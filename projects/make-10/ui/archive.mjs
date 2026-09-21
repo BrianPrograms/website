@@ -24,11 +24,12 @@ export function setupArchive(controller) {
       $('next-month').disabled = view.month >= view.daily.date.slice(0, 7);
       $('calendar-today').disabled = view.busy;
       $('calendar-days').setAttribute('aria-busy', String(view.busy));
-      $('calendar-days').replaceChildren(...monthCells(view.month, view.daily, view.active).map(cell => {
+      $('calendar-days').replaceChildren(...monthCells(view.month, view.daily, view.active, view.solvedDates).map(cell => {
         if (!cell) { const spacer = document.createElement('span'); spacer.setAttribute('aria-hidden', 'true'); return spacer; }
         const el = document.createElement('button'); el.type = 'button'; el.textContent = cell.day;
         el.dataset.date = cell.date; el.disabled = cell.disabled;
-        el.setAttribute('aria-label', formatDate(cell.date)); el.setAttribute('aria-pressed', String(cell.selected));
+        el.setAttribute('aria-label', formatDate(cell.date)+(cell.solved?', solved':'')); el.setAttribute('aria-pressed', String(cell.selected));
+        if(cell.solved)el.classList.add('solved-date');
         if (cell.today) el.setAttribute('aria-current', 'date');
         el.addEventListener('click', () => controller.selectDate(cell.date));
         return el;

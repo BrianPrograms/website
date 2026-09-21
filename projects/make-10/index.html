@@ -23,6 +23,13 @@
       <button id="evaluation" class="evaluation" hidden aria-label="Evaluation result"></button>
       <div id="load-state" class="load-state"><p id="load-message" role="status">Loading…</p><button id="retry" hidden>Retry</button></div>
     </section>
+    <section id="saved-result" class="saved-result" aria-label="Solution result" hidden>
+      <p id="save-message" role="status" aria-live="polite"></p>
+      <button id="save-retry" hidden>Retry</button>
+      <button id="other-solutions" aria-expanded="false" aria-controls="other-methods" hidden>Other solutions</button>
+      <div id="other-methods" hidden></div>
+      <button id="try-another" hidden>Try another solution</button>
+    </section>
     <div id="tools" class="tools" role="group" aria-label="Arithmetic tools"></div>
     <div class="edits">
       <button id="erase" aria-label="Erase mode" aria-pressed="false" title="Erase symbols">

@@ -71,6 +71,13 @@
 .make10 .calendar-days button[aria-pressed=true] { background:#243957; color:var(--accent); }
 .make10 .calendar button:not(:disabled):hover { background:#243957; }
 .make10 .calendar-status { min-height:18px; margin:12px 0 0; color:var(--muted); text-align:center; font-size:12px; }
+.make10 .saved-result { position:relative; z-index:1; text-align:center; color:var(--muted); font-size:13px; margin:-90px auto 36px; max-width:480px; }
+.make10 .saved-result p { margin:0 0 6px; }
+.make10 .saved-result button { min-height:44px; padding:0 10px; color:var(--accent); }
+.make10 #other-methods { max-height:200px; overflow:auto; margin:8px 0; }
+.make10 .method-row { display:flex; justify-content:space-between; align-items:baseline; gap:16px; padding:8px 4px; text-align:left; }
+.make10 .method-row span { overflow-wrap:anywhere; }
+.make10 .method-row small { flex-shrink:0; }
 @media(max-width:480px) {
   .make10 .game { padding:0 12px 30px; }
   .make10 header { padding-top:32px; }
@@ -86,3 +93,5 @@
   .make10 .evaluation { font-size:30px; }
 }
 @media(prefers-reduced-motion:reduce) { .make10 .step-in { animation:none; } }
+.make10 #calendar-days button.solved-date { position:relative; }
+.make10 #calendar-days button.solved-date::after { content:''; position:absolute; bottom:3px; left:calc(50% - 2px); width:4px; height:4px; border-radius:50%; background:currentColor; }

@@ -111,7 +111,13 @@ D1 query. Allowed requests query one row using parameterized statements. No list
 hash, index, solutions or future schedule is returned. Daily ignores client date,
 timezone and clock parameters.
 
-## Remaining manual Cloudflare setup (do not deploy yet)
+## Cloudflare setup reference (completed; do not deploy yet)
+
+Both remote databases are configured and seeded. Stage 6's new migration and
+solution recording verification are documented in [SOLUTIONS.md](SOLUTIONS.md).
+Stage 7's read-only status/progress APIs and local persistence are documented in
+[PROGRESS.md](PROGRESS.md); no additional migration is required.
+The commands below are setup reference, not instructions to recreate the databases.
 
 1. Authenticate: `npx wrangler login` and complete Cloudflare's browser login.
 2. Confirm the intended account with `npx wrangler whoami`.

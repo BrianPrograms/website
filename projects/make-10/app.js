@@ -1,7 +1,11 @@
-import { OPERATORS, initialState, edit, canOpen, canClose, inspect, symbols } from './ui/editor.mjs';
+import { OPERATORS, initialState, edit, canOpen, canClose, inspect, symbols, expression } from './ui/editor.mjs';
 import { idle, submit, advance, resume } from './ui/playback.mjs';
 import { createPuzzleController, archiveLabel } from './ui/puzzles.mjs';
 import { setupArchive } from './ui/archive.mjs';
+import { createSaveController, methodMessage } from './ui/save.mjs';
+import { createAttempts } from './ui/attempts.mjs';
+import { createHistory } from './ui/history.mjs';
+import { createProgress } from './ui/progress.mjs';
 
 const $ = id => document.getElementById(id);
 const names = { '+':'Add', '-':'Minus', '*':'Multiply', '/':'Divide', '(':'Open parenthesis', ')':'Close parenthesis' };
@@ -12,6 +16,7 @@ let playback = idle();
 let timer = null;
 let drag = null;
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+const attempts = createAttempts();
 
 function button(label, value, className, key) {
   const el = document.createElement('button');
@@ -24,6 +29,7 @@ function commit(action) {
   if (playback.phase !== 'editing') return;
   const previousUnclosed = state.pending.length;
   state = edit(state,action); selected = null; render();
+  attempts.save(puzzles.view.active,state);
   const unclosed = state.pending.length;
   if (unclosed !== previousUnclosed) {
     const matched = action.type === 'close' ? 'Parenthesis matched. ' : '';
@@ -146,6 +152,7 @@ function schedule() {
   clearTimeout(timer);
   if (playback.phase === 'evaluating') timer=setTimeout(()=>{playback=advance(playback);render();schedule();},reducedMotion.matches ? 350 : 850);
   else if (playback.phase === 'incorrect') timer=setTimeout(returnToAttempt,1800);
+  else if (playback.phase === 'solved' && saving.view.phase === 'idle') void saving.start(puzzles.view.active.date,expression(playback.attempt));
 }
 function evaluateAttempt() {
   if (playback.phase !== 'editing') return;
@@ -211,6 +218,8 @@ for (const tool of [...OPERATORS,'(',')']) {
 }
 $('erase').addEventListener('click',()=>{selected=null;erasing=!erasing;render();});
 $('reset').addEventListener('click',()=>{
+  progress.cancel(); attempts.clear(puzzles.view.active);
+  saving.reset();
   clearTimeout(timer);finishDrag(true);state=initialState(state.puzzle);playback=idle();selected=null;erasing=false;render();$('announcement').textContent='Expression cleared.';
 });
 document.addEventListener('keydown',event=>{
@@ -220,11 +229,13 @@ window.addEventListener('blur',()=>finishDrag(true));
 let archive;
 const puzzles = createPuzzleController({
   onPuzzle(nextState) {
+    saving.reset();
     clearTimeout(timer); timer=null; finishDrag(true);
-    state=nextState; playback=idle(); selected=null; erasing=false;
+    state=attempts.load(puzzles.view.active); playback=idle(); selected=null; erasing=false;
     render();
     if (!reducedMotion.matches) $('equation').animate([{opacity:0},{opacity:1}], {duration:220});
     $('announcement').textContent = 'Puzzle loaded.';
+    void progress.restore(puzzles.view.active);
   },
   onChange(view) {
     $('load-state').hidden = Boolean(view.active);
@@ -236,8 +247,45 @@ const puzzles = createPuzzleController({
     archive?.render(view);
   },
 });
-archive = setupArchive(puzzles);
-$('retry').addEventListener('click', () => puzzles.start());
+const saving = createSaveController({onChange(view) {
+  $('saved-result').hidden = view.phase === 'idle';
+  $('save-message').textContent = view.phase==='saving' ? 'Saving…' : view.phase==='failed' ? "Couldn't save result" : view.phase==='saved' ? methodMessage(view.result.method) : '';
+  $('save-retry').hidden = view.phase!=='failed';
+  $('other-solutions').hidden = view.phase!=='saved';
+  $('try-another').hidden = view.phase!=='saved';
+  $('other-methods').hidden=true; $('other-methods').replaceChildren(); $('other-solutions').setAttribute('aria-expanded','false');
+  if(view.phase==='saved') {
+    attempts.clear(puzzles.view.active);progress.mark(puzzles.view.active.date);
+    if(!view.result.otherMethods.length) {
+      const empty=document.createElement('p');empty.textContent='No other methods discovered yet.';$('other-methods').append(empty);
+    }
+    for(const method of view.result.otherMethods) {
+      const row=document.createElement('div'); row.className='method-row';
+      const expr=document.createElement('span'); expr.textContent=method.expression;
+      const count=document.createElement('small');count.textContent=`${method.count} ${method.count===1?'player':'players'}`;
+      row.append(expr,count);$('other-methods').append(row);
+    }
+  }
+}});
+$('save-retry').addEventListener('click',()=>saving.retry());
+$('other-solutions').addEventListener('click',()=>{
+  $('other-methods').hidden=!$('other-methods').hidden;
+  $('other-solutions').setAttribute('aria-expanded',String(!$('other-methods').hidden));
+});
+const progress = createProgress({
+  onChange(){puzzles.view.solvedDates=progress.solvedDates;archive?.render(puzzles.view);},
+  onSolved(data,active){
+    if(puzzles.view.active!==active)return;
+    clearTimeout(timer);finishDrag(true);selected=null;erasing=false;
+    playback={phase:'solved',correct:true,frames:['10'],index:0};
+    saving.restore(data);render();
+  },
+});
+const navigation=createHistory(puzzles);
+$('try-another').addEventListener('click',()=>{$('reset').click();attempts.save(puzzles.view.active,state);$('tools').querySelector('button').focus();});
+archive = setupArchive(navigation);
+$('retry').addEventListener('click', () => navigation.start().then(()=>progress.refresh(puzzles.view.daily)));
+window.addEventListener('popstate',()=>void navigation.pop());
 let lastCheck = 0;
 function checkDaily() {
   if (document.visibilityState !== 'visible' || Date.now() - lastCheck < 30000) return;
@@ -247,4 +295,4 @@ window.addEventListener('focus', checkDaily);
 document.addEventListener('visibilitychange', checkDaily);
 setInterval(checkDaily, 5 * 60 * 1000);
 render();
-void puzzles.start();
+void navigation.start().then(()=>{if(puzzles.view.daily)void progress.refresh(puzzles.view.daily);});
