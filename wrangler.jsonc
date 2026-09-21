@@ -2,6 +2,9 @@
 	"name": "website",
 	"compatibility_date": "2025-12-01",
 	"pages_build_output_dir": ".",
+	"vars": {
+		"MAKE10_LAUNCH_DATE": "2026-09-01"
+	},
 	"d1_databases": [
 		{
 			"binding": "commander_draft_db",

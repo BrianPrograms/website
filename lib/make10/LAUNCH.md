@@ -1,6 +1,96 @@
-# Stage 8A preview and Stage 8B launch checklist
+# Make 10 production release and preview history
 
-## Verified preview
+## Stage 8B production release — 22 September 2026 (Sydney)
+
+Released with explicit user approval to the existing `website` Pages project,
+production branch `main`, using a staged direct upload. No Git push or merge was
+performed. No gameplay or engine code changed in this release task.
+
+- Public game: https://www.brians-projects.com/projects/make-10/
+- Portfolio: https://www.brians-projects.com/
+- Immutable deployment: https://77d3964e.website-6sn.pages.dev
+- Deployment ID: `77d3964e-06e6-47d0-b2ea-fafec7241c35`.
+- Cloudflare metadata confirmed `environment=production`, branch `main`,
+  `uses_functions=true`, and `make10_db` bound to `make10-db`, UUID
+  `4d873aa1-5eac-4f2e-a0b0-84d46dec0ad6`.
+- Permanent Basic v1 anchor: **`MAKE10_LAUNCH_DATE=2026-09-01`**. Never change
+  this date after launch: doing so would remap dates and recorded player results.
+  It is configured in top-level `vars` in the tracked `wrangler.jsonc`, copied
+  into the production package, and confirmed in the live Functions environment
+  through deployment metadata and the daily API response.
+- The preview launch date and D1 bindings were compared before/after and remained
+  unchanged. The generated production configuration has no `env.preview` section
+  or preview database UUID. Commander Draft's existing production binding remains.
+
+### Release bundle and repeatable production build
+
+The existing Stage 8A builder now supports explicit production mode. Its name is
+retained to avoid duplicating the reviewed build implementation:
+
+```powershell
+node scripts/pages-preview-build.mjs --production
+$bundle = Get-Content .wrangler/make10-production-build.json | ConvertFrom-Json
+# Run only for an explicitly authorized production release:
+node node_modules/wrangler/bin/wrangler.js pages deploy public --cwd $bundle.staging --project-name website --branch main --commit-dirty=true
+```
+
+Production mode requires the permanent date and the correct, separate D1 UUIDs.
+Preview mode still accepts its own date and does not change production remotely.
+The production release uploaded `.wrangler/pages-production-U70kam/public`, not
+the repository root. The audited directory contains exactly the 39 allowlisted
+public assets, generated `404.html`, `_routes.json`, and `_worker.js/index.js`.
+The worker preserves all existing Pages Functions routes. Root portfolio, Make
+10 (including the final fixed-digit-size polish), X-O RNG, Commander Draft, icons,
+manifest, sitemap, and resume are included. No tests, documentation, administrative
+scripts, SQL/migrations, local database files, config/secrets, solver, frozen
+sequence, or `.make10-private` data are static deployment assets. The generated
+Wrangler config and asset manifest stay outside `public`.
+
+Do not deploy directly from the repository root. Future releases must use this
+reviewed bundle process; any Git-triggered build workflow must produce the same
+public bundle before being used for a release.
+
+### Release verification
+
+- All **66 tests** passed before release, including after the build-mode change.
+  `git diff --check`, Pages Functions compilation, and exact bundle-file audit passed.
+- Exhaustive sequence verification checked all 10,000 ordered puzzles: exactly
+  6,891 solvable puzzles, matching the authoritative artifact.
+- Before and after deployment, read-only production queries and reconstruction
+  verified **6,891 rows, 6,891 unique puzzles, indices 0–6890**, SHA-256
+  `b0e9c92129a2b82be2e69c1a8acf70e84282e536ad1df6a870ae4b28990833b2`.
+- Final production counts: `make10_players=0`, `make10_solution_methods=0`,
+  `make10_player_methods=0`. No automated production players or successful
+  submissions were created; no real manual solve was necessary.
+- Custom-domain checks loaded all 39 public assets; all 35 non-HTML assets matched
+  the release bundle byte-for-byte. Homepage card and project links worked.
+- Live daily API returned `2026-09-22 / 8802` with the permanent anchor; archive
+  September 1 returned `3411`; September 5 preserved the leading zero in `0446`.
+  These were checked against the authoritative schedule without exposing future rows.
+- Daily, puzzle, status and progress reads passed. Player/solution GET returned
+  405; cross-origin player POST returned 403; invalid/oversized/future solution
+  requests were rejected before any database write. Responses contained no player
+  IDs or raw SQL errors. Unsolved status/progress exposed no solution expressions.
+- Pre-launch/future puzzle and status requests returned 404. Private/config/test/
+  database/solver/worker-source paths returned 404. Commander Draft's existing
+  room route remained reachable without creating a room.
+- Browser verification on the real custom domain passed: homepage card navigation,
+  today's puzzle, archive bounds and September 1, leading-zero deep link,
+  Back/Forward, unfinished attempt reload/restoration, game and calendar at 320px,
+  and no Make 10 console warnings/errors. X-O RNG and Commander Draft frontends
+  opened through the portfolio links. The temporary local-only attempt was cleared.
+- Cookie flags (`HttpOnly`, `Secure`, `SameSite=Lax`, `Path=/`, one-year Max-Age)
+  and safe identity response shape passed against the exact compiled production
+  worker with an in-memory D1 stub and an HTTPS custom-domain request URL. The
+  same behavior was previously verified on HTTPS preview. **Live production cookie
+  issuance and successful saving were deliberately not exercised**, because they
+  would create player/submission data. A real production solve requires user approval.
+
+No launch-blocking issue was found during Stage 8B. The previously fixed daily-fetch
+race and the approved typography polish are included. Sections below are retained
+as the historical Stage 8A record, not the current production configuration.
+
+## Stage 8A verified preview (historical)
 
 - Project: `website`; production branch: `main` (confirmed with Cloudflare API).
 - Preview branch: `codex/make10-preview`; no Git push or merge was performed.
@@ -135,7 +225,7 @@ Use the final preview URL on your actual phone, in portrait:
 Phone tests may create preview-only solves. Never run disposable test solves on
 the production database/domain.
 
-## Exact remaining Stage 8B actions — not performed
+## Original Stage 8A handoff checklist (superseded by release record above)
 
 1. Complete the phone checklist and resolve any physical-device problems. Approve
    the actual Sydney-calendar launch date and explicitly authorize production release.
