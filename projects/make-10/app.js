@@ -275,7 +275,9 @@ $('other-solutions').addEventListener('click',()=>{
 const progress = createProgress({
   onChange(){puzzles.view.solvedDates=progress.solvedDates;archive?.render(puzzles.view);},
   onSolved(data,active){
-    if(puzzles.view.active!==active)return;
+    // Progress's selection token rejects superseded dates. A same-date daily
+    // refresh may replace the active object without changing the puzzle.
+    if(puzzles.view.active?.date!==active.date||puzzles.view.active?.puzzle!==active.puzzle)return;
     clearTimeout(timer);finishDrag(true);selected=null;erasing=false;
     playback={phase:'solved',correct:true,frames:['10'],index:0};
     saving.restore(data);render();

@@ -51,6 +51,15 @@ test('valid archive deep link loads correct puzzle and today links normalize wit
   const h=navigationHarness('https://game.test/projects/make-10/?date=2026-09-20');await h.nav.start();assert.equal(h.state.puzzle,'0019');assert.equal(h.controller.view.active.date,archive.date);assert.equal(h.entries.length,1);
   const t=navigationHarness('https://game.test/projects/make-10/?date=2026-09-21');await t.nav.start();assert(!t.location.href.includes('date='));
 });
+test('today startup makes one daily request, preserving active identity for pending solved restoration',async()=>{
+  let finish,activeAtRequest,restored=false;
+  const progress=createProgress({fetcher:()=>new Promise(resolve=>finish=resolve),onSolved:(_data,active)=>{restored=controller.view.active===active;}});
+  let dailyRequests=0;
+  const controller=createPuzzleController({fetcher:async()=>{dailyRequests++;return response(daily);},onPuzzle(){activeAtRequest=controller.view.active;void progress.restore(activeAtRequest);}});
+  const nav=createHistory(controller,{location:{href:'https://game.test/projects/make-10/'},history:{replaceState(){},pushState(){}}});
+  await nav.start();assert.equal(dailyRequests,1);assert.equal(controller.view.active,activeAtRequest);
+  finish(response(saved));await new Promise(resolve=>setImmediate(resolve));assert(restored);
+});
 test('malformed, duplicated, future and pre-launch deep links safely fall back without requesting an archive puzzle',async()=>{
   for(const query of ['date=wrong','date=2026-09-22','date=2026-08-31','date=2026-02-30','date=2026-09-20&date=2026-09-19']) {
     const h=navigationHarness(`https://game.test/projects/make-10/?${query}`);await h.nav.start();assert.equal(h.controller.view.active.date,daily.date);assert(h.calls.every(url=>url.endsWith('/daily')));assert(!h.location.href.includes('date='));

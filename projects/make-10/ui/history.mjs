@@ -24,7 +24,7 @@ export function createHistory(controller,{location=globalThis.location,history=g
   }
   return {
     ...controller,
-    async start(){const current=++ticket;const ok=await controller.start();if(!ok||current!==ticket)return;await navigate(linkedDate(location.href,controller.view.daily),true);},
+    async start(){const current=++ticket;const ok=await controller.start();if(!ok||current!==ticket)return;const date=linkedDate(location.href,controller.view.daily);if(date)await navigate(date,true);else update(true);},
     selectDate:date=>navigate(date),today:()=>navigate(null),
     pop:()=>navigate(linkedDate(location.href,controller.view.daily),true),
   };
