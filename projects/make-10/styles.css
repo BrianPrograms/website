@@ -9,15 +9,15 @@
 .make10 button { font:inherit; color:inherit; border:0; background:none; cursor:pointer; padding:0; touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
 .make10 :focus-visible { outline:2px solid var(--accent); outline-offset:4px; border-radius:6px; }
 .make10 .stage { position:relative; display:flex; justify-content:center; align-items:center; min-height:370px; padding:150px 0; }
-.make10 .equation { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:4px; width:100%; font-size:clamp(34px,6vw,68px); line-height:1.25; font-variant-numeric:tabular-nums; }
-.make10 .equation.pristine { font-size:clamp(64px,10vw,106px); }
+.make10 .equation { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:4px; width:100%; font-size:clamp(64px,10vw,106px); line-height:1.25; font-variant-numeric:tabular-nums; }
+.make10 .equation-end { display:inline-flex; align-items:center; gap:8px; flex-shrink:0; }
 .make10 .operand,.make10 .atom,.make10 .group-open { position:relative; display:inline-flex; align-items:center; flex-shrink:0; }
 .make10 .operand { margin-block:6px; }
 .make10 .digit { font-weight:600; letter-spacing:-.04em; user-select:none; }
-.make10 .symbol { font-size:.72em; color:#aabbd5; min-height:44px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px; }
+.make10 .symbol { font-size:.55em; color:#aabbd5; min-height:44px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px; }
 .make10 .manual { min-width:.37em; }
-.make10 .auto { font-size:.7em; color:var(--muted); }
-.make10 .binary { width:44px; min-height:56px; font-size:.7em; border-radius:9px; flex-shrink:0; position:relative; }
+.make10 .auto { font-size:.55em; color:var(--muted); }
+.make10 .binary { width:44px; min-height:56px; font-size:.48em; border-radius:9px; flex-shrink:0; position:relative; }
 .make10 .binary.empty { color:transparent; }
 .make10 .binary.target { background:#a4c4ff12; color:var(--accent); }
 .make10 .insertion { position:absolute; width:40px; height:40px; border-radius:50%; color:var(--accent); font-size:22px; background:#a4c4ff10; border:1px dashed #a4c4ff60; z-index:2; }
@@ -30,8 +30,13 @@
 .make10 .pending { color:#e0c69c; }
 .make10 .erasable { color:#f2c0b2; background:#e39b8212; box-shadow:inset 0 -2px #e39b8260; cursor:crosshair; }
 .make10 .symbol:not(.erasable) { cursor:default; }
-.make10 .equals { width:48px; min-height:56px; color:var(--accent); font-size:.8em; border-radius:10px; margin-left:6px; }
-.make10 .equals:hover { background:#a4c4ff10; }
+.make10 .equals { display:grid; place-items:center; flex:0 0 48px; width:48px; height:48px; color:var(--text); font-size:32px; line-height:1; border:1px solid #405777; border-radius:13px; background:#1c2c46; box-shadow:0 3px 8px #0004; transition:background .15s,border-color .15s,box-shadow .15s; }
+@media(hover:hover) { .make10 .equals:hover { background:#2a4060; border-color:#819dc6; box-shadow:0 4px 10px #0005; } }
+.make10 .equals:active { background:#142238; border-color:var(--accent); box-shadow:inset 0 2px 4px #0005; }
+.make10 .equals:focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:13px; }
+.make10 .equals.appearing { animation:equals-appear .28s ease-out; }
+@keyframes equals-appear { from { opacity:0; transform:scale(.92); } 70% { opacity:1; transform:scale(1.035); } to { opacity:1; transform:scale(1); } }
+@keyframes equals-fade { from { opacity:0; } to { opacity:1; } }
 .make10 .tools { display:flex; justify-content:center; gap:12px; }
 .make10 .tool { width:58px; height:58px; border-radius:12px; background:#152035; font-size:28px; border:1px solid #23304a; cursor:grab; user-select:none; touch-action:none; }
 .make10 .tool:hover { background:#1c2c46; }
@@ -83,15 +88,16 @@
   .make10 header { padding-top:32px; }
   .make10 h1 { font-size:25px; }
   .make10 .stage { min-height:340px; padding:150px 0; }
-  .make10 .equation { font-size:30px; gap:2px; row-gap:20px; }
-  .make10 .equation.pristine { font-size:68px; }
+  .make10 .equation { font-size:68px; gap:1px; row-gap:20px; }
+  .make10 .equation-end { gap:3px; }
   .make10 .binary { width:32px; }
   .make10 .pristine .binary { width:36px; }
   .make10 .tools { gap:6px; }
   .make10 .tool { width:44px; height:48px; flex-shrink:0; font-size:25px; border-radius:10px; }
-  .make10 .equals { width:38px; margin-left:0; }
+  .make10 .equals { flex-basis:44px; width:44px; height:44px; font-size:28px; }
   .make10 .evaluation { font-size:30px; }
 }
 @media(prefers-reduced-motion:reduce) { .make10 .step-in { animation:none; } }
+@media(prefers-reduced-motion:reduce) { .make10 .equals { transition:none; } .make10 .equals.appearing { animation:equals-fade .15s ease-out; } }
 .make10 #calendar-days button.solved-date { position:relative; }
 .make10 #calendar-days button.solved-date::after { content:''; position:absolute; bottom:3px; left:calc(50% - 2px); width:4px; height:4px; border-radius:50%; background:currentColor; }

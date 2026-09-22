@@ -15,6 +15,7 @@ let erasing = false;
 let playback = idle();
 let timer = null;
 let drag = null;
+let evaluationAvailable = false;
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 const attempts = createAttempts();
 
@@ -107,10 +108,16 @@ function renderEquation() {
     }
   });
   const checked = inspect(state);
-  if (['correct','different'].includes(checked.status)) {
-    const equals = button('Evaluate expression','=','equals','equals');
-    equals.addEventListener('click',evaluateAttempt); row.append(equals);
+  const canEvaluate = ['correct','different'].includes(checked.status);
+  if (canEvaluate) {
+    const equals = button('Evaluate expression','=',`equals${evaluationAvailable ? '' : ' appearing'}`,'equals');
+    equals.addEventListener('click',evaluateAttempt);
+    // Keep the control beside the final operand, including when the row wraps.
+    const lastOperand = row.lastElementChild;
+    const ending = document.createElement('span'); ending.className = 'equation-end';
+    lastOperand.replaceWith(ending); ending.append(lastOperand,equals);
   }
+  evaluationAvailable = canEvaluate;
   $('notice').textContent = erasing ? 'Erase mode' : checked.unclosed ? '' : checked.status === 'undefined' ? 'Cannot divide by zero' : checked.status === 'invalid' ? 'Check the expression' : '';
   // Keep contextual targets inside the viewport even beside nested edge groups.
   for (const target of row.querySelectorAll('.insertion')) {
@@ -123,6 +130,7 @@ function renderEquation() {
 function render() {
   const focusKey = document.activeElement?.dataset.key;
   const editing = Boolean(state) && playback.phase === 'editing';
+  if (!editing) evaluationAvailable = false;
   $('equation').hidden = !editing;
   $('evaluation').hidden = !state || editing;
   for (const tool of $('tools').children) { tool.disabled=!editing; tool.setAttribute('aria-pressed',String(selected===tool.dataset.tool)); }
