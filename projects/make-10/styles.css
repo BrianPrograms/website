@@ -10,7 +10,7 @@
 .make10 :focus-visible { outline:2px solid var(--accent); outline-offset:4px; border-radius:6px; }
 .make10 .stage { position:relative; display:flex; justify-content:center; align-items:center; min-height:370px; padding:150px 0; }
 .make10 .equation { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:4px; width:100%; font-size:clamp(64px,10vw,106px); line-height:1.25; font-variant-numeric:tabular-nums; }
-.make10 .equation-end { display:inline-flex; align-items:center; gap:8px; flex-shrink:0; }
+.make10 .equation-end { display:inline-flex; align-items:center; gap:14px; flex-shrink:0; }
 .make10 .operand,.make10 .atom,.make10 .group-open { position:relative; display:inline-flex; align-items:center; flex-shrink:0; }
 .make10 .operand { margin-block:6px; }
 .make10 .digit { font-weight:600; letter-spacing:-.04em; user-select:none; }
@@ -30,7 +30,9 @@
 .make10 .pending { color:#e0c69c; }
 .make10 .erasable { color:#f2c0b2; background:#e39b8212; box-shadow:inset 0 -2px #e39b8260; cursor:crosshair; }
 .make10 .symbol:not(.erasable) { cursor:default; }
-.make10 .equals { display:grid; place-items:center; flex:0 0 48px; width:48px; height:48px; color:var(--text); font-size:32px; line-height:1; border:1px solid #405777; border-radius:13px; background:#1c2c46; box-shadow:0 3px 8px #0004; transition:background .15s,border-color .15s,box-shadow .15s; }
+/* Align the box with the operators' ink, independently of the pop transform.
+   Asymmetric padding lifts the glyph by half its value within the centred grid. */
+.make10 .equals { display:grid; place-items:center; position:relative; top:5px; flex:0 0 58px; width:58px; height:58px; padding:0 0 10px; color:var(--text); font-size:40px; font-weight:500; line-height:1; border:1px solid #405777; border-radius:13px; background:#1c2c46; box-shadow:0 3px 8px #0004; transition:background .15s,border-color .15s,box-shadow .15s; }
 @media(hover:hover) { .make10 .equals:hover { background:#2a4060; border-color:#819dc6; box-shadow:0 4px 10px #0005; } }
 .make10 .equals:active { background:#142238; border-color:var(--accent); box-shadow:inset 0 2px 4px #0005; }
 .make10 .equals:focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:13px; }
@@ -89,12 +91,12 @@
   .make10 h1 { font-size:25px; }
   .make10 .stage { min-height:340px; padding:150px 0; }
   .make10 .equation { font-size:68px; gap:1px; row-gap:20px; }
-  .make10 .equation-end { gap:3px; }
+  .make10 .equation-end { gap:10px; }
   .make10 .binary { width:32px; }
   .make10 .pristine .binary { width:36px; }
   .make10 .tools { gap:6px; }
   .make10 .tool { width:44px; height:48px; flex-shrink:0; font-size:25px; border-radius:10px; }
-  .make10 .equals { flex-basis:44px; width:44px; height:44px; font-size:28px; }
+  .make10 .equals { top:3px; flex-basis:44px; width:44px; height:44px; padding-bottom:8px; font-size:34px; }
   .make10 .evaluation { font-size:30px; }
 }
 @media(prefers-reduced-motion:reduce) { .make10 .step-in { animation:none; } }
